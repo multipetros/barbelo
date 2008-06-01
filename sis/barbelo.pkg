@@ -1,0 +1,13 @@
+&EN
+
+#{"barbelo"},(0xA0000666),1,0,0
+
+%{"sorbo"}
+:"sorbo"
+
+[0x101F7961], 0, 0, 0, {"S60ProductID"}
+
+"\root\symbian-sdks\s60_31\epoc32\release\gcce\urel\barbelo.exe" -"!:\sys\bin\barbelo.exe"
+"\root\symbian-sdks\s60_31\epoc32\data\z\resource\apps\barbelo.rsc" -"!:\resource\apps\barbelo.rsc"
+"\root\symbian-sdks\s60_31\epoc32\data\z\private\10003a3f\import\apps\barbelo_reg.rsc" -"!:\private\10003a3f\import\apps\barbelo_reg.rsc"
+"..\gfx\barbelo.mif" -"!:\resource\apps\barbelo_aif.mif"

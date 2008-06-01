@@ -1,0 +1,264 @@
+NAME	BARB
+
+#include <eikon.rh>
+#include <avkon.rh>
+#include <avkon.rsg>
+#include <appinfo.rh>
+
+#include "barbre.hrh"
+
+RESOURCE RSS_SIGNATURE
+{
+}
+
+RESOURCE TBUF r_default_document_name
+{
+	buf = "BARB";
+}
+
+RESOURCE EIK_APP_INFO
+{
+	status_pane = r_barbelo_status;
+}
+
+RESOURCE STATUS_PANE_APP_MODEL r_barbelo_status
+{
+	panes = {
+		SPANE_PANE
+		{
+			id       = EEikStatusPaneUidNavi;
+			type     = EAknCtNaviPane;
+			resource = r_navi_decorator;
+		}
+	};
+}
+
+RESOURCE NAVI_DECORATOR r_navi_decorator
+{
+	type = ENaviDecoratorControlTabGroup;
+	control = TAB_GROUP {
+		tab_width = EAknTabWidthWithTwoLongTabs;
+		active = 0;
+		tabs = {
+			TAB {
+				id = ETabScan;
+				txt = "scan";
+			},
+			TAB {
+				id = ETabMap;
+				txt = "map";
+			},
+			TAB {
+				id = ETabDebug;
+				txt = "debug";
+			}
+		};
+	};
+}
+
+RESOURCE AVKON_VIEW r_barbscan_view
+{
+	menubar	    = r_barbelo_menubar;
+	cba	    = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
+}
+
+RESOURCE AVKON_VIEW r_barbmap_view
+{
+	menubar	    = r_barbelo_menubar;
+	cba	    = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
+}
+
+RESOURCE AVKON_VIEW r_barbdebug_view
+{
+	menubar	    = r_barbelo_menubar;
+	cba	    = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
+}
+
+RESOURCE MENU_BAR r_barbelo_menubar
+{
+	titles =
+	{
+		MENU_TITLE { menu_pane = r_barbelo_menu; }
+	};
+}
+
+RESOURCE MENU_PANE r_barbelo_menu
+{
+	items =
+	{
+		MENU_ITEM
+		{
+			command = EMenuLogStart;
+			txt	= "Start log";
+		},
+		MENU_ITEM
+		{
+			command = EMenuLogStop;
+			txt	= "Stop log";
+		},
+		MENU_ITEM
+		{
+			command = EAknSoftkeyExit;
+			txt	= "Exit";
+		}
+	};
+}
+
+RESOURCE LOCALISABLE_APP_INFO r_barbelo_loc_app_info
+{
+	short_caption = "barbelo";
+	caption_and_icon = CAPTION_AND_ICON_INFO
+	{
+		caption 	= "barbelo";
+		number_of_icons	= 1;
+		icon_file = "\\resource\\apps\\barbelo_aif.mif";
+	};
+}
+
+RESOURCE EDWIN r_barbelo_dbg
+{
+	maxlength = 511;
+	default_case = EAknEditorTextCase;
+	allowed_case_modes = EAknEditorAllCaseModes;
+	numeric_keymap = EAknEditorStandardNumberModeKeymap;
+	default_input_mode = EAknEditorTextInputMode;
+	allowed_input_modes = EAknEditorAllInputModes;
+	special_character_table = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG;
+	flags = EEikEdwinNoHorizScrolling | EEikEdwinReadOnly 
+		| EEikEdwinNoAutoSelection | EEikEdwinAvkonDisableCursor;
+	avkon_flags = EAknEditorFlagEnableScrollBars;
+	lines = 10;
+
+}
+
+RESOURCE DIALOG r_barbelo_ap_details
+{
+	flags = EEikDialogFlagWait | EEikDialogFlagFillAppClientRect
+		| EEikDialogFlagNoTitleBar | EEikDialogFlagNoDrag
+		| EEikDialogFlagCbaButtons;
+
+	buttons = R_AVKON_SOFTKEYS_BACK;
+	form = r_barbelo_ap_form;
+}
+
+RESOURCE FORM r_barbelo_ap_form
+{
+	flags = EEikFormUseDoubleSpacedFormat;
+
+	items = {
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "SSID";
+			id = EFormSSID;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+				flags = EEikEdwinNoHorizScrolling
+                        		| EEikEdwinDisplayOnly
+                        		| EEikEdwinAvkonNotEditable
+                        		| EEikEdwinAvkonDisableCursor;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Signal";
+			id = EFormSignal;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Encryption";
+			id = EFormEncryption;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Channel";
+			id = EFormChannel;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Mode";
+			id = EFormMode;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "BSSID";
+			id = EFormBSSID;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Latitude";
+			id = EFormLatitude;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Longitude";
+			id = EFormLongitude;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "First seen";
+			id = EFormFirstSeen;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		},
+		DLG_LINE {
+			type = EEikCtEdwin;
+			prompt = "Last seen";
+			id = EFormLastSeen;
+			itemflags = EEikDlgItemTakesEnterKey
+				    | EEikDlgItemOfferAllHotKeys;
+			control = EDWIN {
+				width = 50;
+				maxlength = 50;
+			};
+		}
+	};
+}

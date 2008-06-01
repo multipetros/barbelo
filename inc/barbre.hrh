@@ -1,0 +1,34 @@
+#ifndef __BARBRE_HRH__
+#define __BARBRE_HRH__
+
+enum BarbTabs {
+	ETabScan = 1,
+	ETabMap,
+	ETabDebug
+};
+
+enum BarbViews {
+	EViewScan = 1,
+	EViewMap,
+	EViewDebug
+};
+
+enum BarbForms {
+	EFormSSID = 1,
+	EFormSignal,
+	EFormEncryption,
+	EFormChannel,
+	EFormMode,
+	EFormBSSID,
+	EFormLatitude,
+	EFormLongitude,
+	EFormFirstSeen,
+	EFormLastSeen
+};
+
+enum BarbMenus {
+	EMenuLogStart = 1,
+	EMenuLogStop
+};
+
+#endif // __BARBRE_HRH__

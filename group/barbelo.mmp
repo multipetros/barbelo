@@ -1,0 +1,34 @@
+target		barbelo.exe
+targettype	exe
+uid		0x100039ce 0xa0000666
+vendorid	0
+capability	none
+
+sourcepath	..\src
+source		barbelo.cpp
+source		barbgui.cpp
+source		wifiscan.cpp
+source		scanview.cpp
+source		debugview.cpp
+source		ap.cpp
+source		details.cpp
+source		utils.cpp
+source		gps.cpp
+source		mapview.cpp
+source		logger.cpp
+
+userinclude	..\inc
+systeminclude	\epoc32\include
+
+sourcepath	..\data
+start resource	barbelo.rss
+header
+targetpath	\resource\apps
+end
+start resource	barbelo_reg.rss
+targetpath	\private\10003a3f\import\apps
+end
+
+library		euser.lib apparc.lib cone.lib eikcore.lib avkon.lib eikcoctl.lib
+library		connmon.lib ecom.lib lbs.lib eikctl.lib form.lib uiklaf.lib
+library		bafl.lib eikdlg.lib esock.lib insock.lib efsrv.lib

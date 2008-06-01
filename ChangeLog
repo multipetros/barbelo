@@ -1,0 +1,10 @@
+v0.3 (31/05/08)
+* Logging support.  Logs in Kismet format.
+* Make compatible with GPSd again.  Understands NMEA.
+
+v0.2 (27/04/08)
+* Show AP details
+* Initial GPS support
+
+v0.1 (14/03/08)
+* Initial release

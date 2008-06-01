@@ -1,0 +1,208 @@
+package org.barbelo;
+
+import javax.microedition.location.*;
+import java.util.*;
+
+public class GPS implements LocationListener {
+	private GPSd			_gpsd;
+	private LocationProvider	_lp;
+
+	public GPS(GPSd gpsd)
+	{
+		_gpsd = gpsd;
+
+		try {
+			Criteria cr = new Criteria();
+			_lp = LocationProvider.getInstance(cr);
+		} catch (Exception e) {
+			_gpsd.exception(e);
+		}
+	}
+
+	public void start()
+	{
+		_lp.setLocationListener(this, 1, 1, 1);
+	}
+
+	public void stop()
+	{
+		_lp.setLocationListener(null, -1, -1, -1);
+	}
+
+	public void locationUpdated(LocationProvider lp, Location location)
+	{
+		double lon = 0, lat = 0;
+
+		if (location.isValid()) {
+			QualifiedCoordinates c = 
+				location.getQualifiedCoordinates();
+
+			lon = c.getLongitude();
+			lat = c.getLatitude();
+		}
+
+		String nmea = get_nmea(location);
+		
+		_gpsd.update_location(lon, lat, nmea);
+	}
+
+	private String get_nmea(Location location)
+	{
+
+		String nmea = location.getExtraInfo(
+			"application/X-jsr179-location-nmea");
+
+		if (nmea == null)
+			return no_data();
+//			return location_to_nmea(location);
+
+		// N95 doesn't seem to put newlines after sentences
+		StringBuffer p = new StringBuffer();
+		int start = 0;
+
+		for (int i = 1; i < nmea.length(); i++) {
+			if (nmea.charAt(i) == '$') {
+				p.append(nmea.substring(start, i));
+				p.append("\r\n");
+				start = i;
+			}
+		}
+		p.append(nmea.substring(start));
+		p.append("\r\n");
+
+		return p.toString();
+	}
+
+	private String no_data()
+	{
+		StringBuffer p = new StringBuffer();
+
+		p.append("$PBRB,0*");
+		p.append(checksum(p));
+		p.append("\r\n");
+
+		return p.toString();
+	}
+
+	private String location_to_nmea(Location location)
+	{
+		StringBuffer nmea = new StringBuffer();
+
+		nmea.append("$GPRMC,");
+
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		nmea.append(zero_pad(c.get(Calendar.HOUR_OF_DAY)));
+		nmea.append(zero_pad(c.get(Calendar.MINUTE)));
+		nmea.append(zero_pad(c.get(Calendar.SECOND)));
+		nmea.append(",");
+
+		double lon = 0;
+		double lat = 0;
+		char lon_d = 'E';
+		char lat_d = 'N';
+
+		if (location.isValid()) {
+			QualifiedCoordinates coord =
+				location.getQualifiedCoordinates();
+
+			lon = coord.getLongitude();
+			lat = coord.getLatitude();
+			nmea.append("A,");
+		} else
+			nmea.append("V,");
+
+		if (lat < 0) {
+			lat_d = 'S';
+			lat *= -1;
+		}
+		nmea.append(sigfig(lat, 4));
+		nmea.append(',');
+		nmea.append(lat_d);
+		nmea.append(',');
+
+		if (lon < 0) {
+			lon_d = 'W';
+			lon *= -1;
+		}
+
+		// XXX need to convert coordinates
+		nmea.append(sigfig(lon, 4));
+		nmea.append(',');
+		nmea.append(lon_d);
+		nmea.append(',');
+
+		double speed = 0;
+		nmea.append(sigfig(speed, 1));
+		nmea.append(',');
+
+		double angle = 0;
+		nmea.append(sigfig(angle, 1));
+		nmea.append(',');
+
+		nmea.append(zero_pad(c.get(Calendar.DATE)));
+		nmea.append(zero_pad(c.get(Calendar.MONTH)+1));
+
+		String year = "" + c.get(Calendar.YEAR);
+		nmea.append(year.substring(year.length() - 2));
+		nmea.append(",");
+
+		// variation
+		nmea.append("0.0,W");
+
+		nmea.append('*');
+		nmea.append(checksum(nmea));
+		nmea.append("\r\n");
+
+		return nmea.toString();
+	}
+
+	private String zero_pad(int num)
+	{
+		StringBuffer x = new StringBuffer();
+
+		if (num < 10)
+			x.append("0");
+
+		x.append(num);
+
+		return x.toString();
+	}
+	
+	private String checksum(StringBuffer b)
+	{
+		char check = 0;
+
+		for (int i = 1; i < (b.length() - 1); i++)
+			check ^= b.charAt(i);
+
+		String hex = Integer.toHexString(check);
+		if (hex.length() < 2)
+			hex = "0" + hex;
+
+		return hex.toUpperCase();
+	}
+
+	private String sigfig(double x, int fig)
+	{
+		String d = Double.toString(x);
+
+		boolean dec = false;
+		for (int i = 0; i < d.length(); i++) {
+			if (dec) {
+				if (fig-- == 0) {
+					d = d.substring(0, i);
+					break;
+				}
+			}
+
+			if (d.charAt(i) == '.')
+				dec = true;
+		}
+
+		return d;
+	}
+
+	public void providerStateChanged(LocationProvider lp, int newState)
+	{
+	}
+}

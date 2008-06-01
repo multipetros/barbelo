@@ -1,0 +1,5 @@
+* In AP details dialog, eliminate focus and make scrolling page by page.
+
+* In AP details dialog, remove top tabs.
+
+* Make GPS reconnect periodically, and on errors.
