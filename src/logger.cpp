@@ -10,7 +10,7 @@ CLogger::CLogger(APS& aps) : CActive(EPriorityStandard), _logging(EFalse),
 	CActiveScheduler::Add(this);
 	_timer.CreateLocal();
 
-	_home.Copy(_L("e:\\barbelo\\logs"));
+	_home.Copy(_L("c:\\DATA\\warwalk"));
 
 	if (_rfs.Connect() != KErrNone)
 		ASSERT(0);
